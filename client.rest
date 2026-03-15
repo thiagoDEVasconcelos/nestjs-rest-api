@@ -2,18 +2,37 @@
 
 ### AppControllerGetHello
 
-# @name AppControllerGetHello GET {{baseUrl}}/home/hello
+# @name AppControllerGetHello 
+GET {{baseUrl}}/home/hello
 
 ### ExemploDeRota
 
-# @name ExemploDeRota GET {{baseUrl}}/home/example/
-
-GET {{baseUrl}}/home/example
+# @name ExemploDeRota 
+GET {{baseUrl}}/home/example/
 
 ### ConceitosManualController Home
 
-# @name ConceitosManualControllerHome GET {{baseUrl}}/conceitos-manual/
+# @name ConceitosManualControllerHome 
+GET {{baseUrl}}/conceitos-manual/
 
 ### ConceitosAutomaticoController Home
 
-# @name ConceitosAutomaticoControllerHome GET {{baseUrl}}/conceitos-automatico/
+# @name ConceitosAutomaticoControllerHome 
+GET {{baseUrl}}/conceitos-automatico/
+
+### MessagesController 
+
+#@name MessagesController
+GET {{baseUrl}}/messages
+###
+#@name MessagesControllerId
+GET {{baseUrl}}/messages/2
+
+###
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+    "first message": "Thats the first message.",
+    "second message": "thats the second message."
+}   
