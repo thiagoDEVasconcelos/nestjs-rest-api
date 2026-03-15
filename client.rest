@@ -35,4 +35,17 @@ Content-Type: application/json
 {
     "first message": "Thats the first message.",
     "second message": "thats the second message."
-}   
+}  
+
+###
+PATCH {{baseUrl}}/messages/2
+Content-Type: application/json
+
+{
+    "first message": "Thats the first message.",
+    "third message": "thats the third message.",
+    "update": true
+}
+
+###
+DELETE {{baseUrl}}/messages/2
