@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateMessageDto,
   Message,
@@ -19,12 +19,20 @@ export class MessagesService {
     },
   ];
 
+  throwNotFoundException() {
+    throw new NotFoundException('Message not found');
+  }
+
   findAll() {
     return this.messages;
   }
 
   findOne(id: number) {
-    return this.messages.find((message) => message.id === id);
+    const findedMessage = this.messages.find((message) => message.id === id);
+
+    if (findedMessage) return findedMessage;
+
+    this.throwNotFoundException();
   }
 
   create(body: CreateMessageDto) {
@@ -39,18 +47,20 @@ export class MessagesService {
   }
 
   update(id: number, body: UpdateMessageDto) {
-    const findedMessageId = this.messages.findIndex(
+    const findedMessageIndex = this.messages.findIndex(
       (message) => message.id === id,
     );
 
-    if (findedMessageId >= 0) {
-      const findedMessage = this.messages[findedMessageId];
-
-      this.messages[findedMessageId] = {
-        ...findedMessage,
-        ...body,
-      };
+    if (findedMessageIndex < 0) {
+      this.throwNotFoundException();
     }
+
+    const findedMessage = this.messages[findedMessageIndex];
+
+    this.messages[findedMessageIndex] = {
+      ...findedMessage,
+      ...body,
+    };
   }
 
   delete(id: number) {
@@ -58,8 +68,12 @@ export class MessagesService {
       (message) => message.id === id,
     );
 
-    if (findedMessageIndex >= 0) {
-      this.messages.splice(findedMessageIndex, 1);
+    if (findedMessageIndex < 0) {
+      this.throwNotFoundException();
     }
+    const message = this.messages[findedMessageIndex];
+
+    this.messages.splice(findedMessageIndex, 1);
+    return message;
   }
 }
