@@ -7,38 +7,35 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { MessagesService } from './messages.service';
+import { CreateMessageDto, UpdateMessageDto } from './entities/message.entity';
 
 @Controller('messages')
 export class MessagesController {
+  constructor(private readonly messagesService: MessagesService) {}
+
   @Get()
-  findAll(): string {
-    return 'this action returns all cats';
+  findAll(): any {
+    return this.messagesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param() parametros: object): string {
-    console.log(parametros);
-
-    return 'this action returns one specific message';
+  findOne(@Param('id') id: number) {
+    return this.messagesService.findOne(id);
   }
 
   @Post()
-  createMessage(@Body() body: JSON) {
-    console.log(body);
-
-    return body;
+  createMessage(@Body() body: CreateMessageDto) {
+    return this.messagesService.create(body);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: JSON) {
-    return {
-      id,
-      ...body,
-    };
+  update(@Param('id') id: number, @Body() body: UpdateMessageDto) {
+    this.messagesService.update(id, body);
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: string) {
-    return 'this route remove the message with id ' + id;
+  deleteOne(@Param('id') id: number) {
+    return this.messagesService.delete(id);
   }
 }

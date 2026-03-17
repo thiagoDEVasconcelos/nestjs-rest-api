@@ -1,41 +1,25 @@
 @baseUrl = http://localhost:3000
 
-### AppControllerGetHello
-
-# @name AppControllerGetHello 
-GET {{baseUrl}}/home/hello
-
-### ExemploDeRota
-
-# @name ExemploDeRota 
-GET {{baseUrl}}/home/example/
-
-### ConceitosManualController Home
-
-# @name ConceitosManualControllerHome 
-GET {{baseUrl}}/conceitos-manual/
-
-### ConceitosAutomaticoController Home
-
-# @name ConceitosAutomaticoControllerHome 
-GET {{baseUrl}}/conceitos-automatico/
-
 ### MessagesController 
 
 #@name MessagesController
-GET {{baseUrl}}/messages
+GET {{baseUrl}}/messages/?page=10&limit=10
 ###
 #@name MessagesControllerId
 GET {{baseUrl}}/messages/2
 
 ###
-POST {{baseUrl}}/messages
+POST {{baseUrl}}/messages/
 Content-Type: application/json
 
-{
-    "first message": "Thats the first message.",
-    "second message": "thats the second message."
-}  
+  {
+    "id": "NOVA MENSAGEM",
+    "text": "Something",
+    "from": "Andorinha",
+    "to": "Derrick",
+    "read": true,
+    "date": "2026-03-17T01:37:17.778Z"
+  }
 
 ###
 PATCH {{baseUrl}}/messages/2
