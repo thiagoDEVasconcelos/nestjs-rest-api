@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -32,12 +33,15 @@ export class MessagesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateMessageDto: UpdateMessageDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateMessageDto: UpdateMessageDto,
+  ) {
     return this.messagesService.update(id, updateMessageDto);
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: number) {
+  deleteOne(@Param('id', ParseIntPipe) id: number) {
     return this.messagesService.delete(id);
   }
 }
