@@ -10,11 +10,11 @@ import {
 export class Message {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   text: string;
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   from: string;
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   to: string;
   @Column({ default: false, type: 'boolean' })
   read: boolean;
