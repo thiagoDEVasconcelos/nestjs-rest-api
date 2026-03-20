@@ -11,18 +11,6 @@ export class MessagesService {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
   ) {}
-  private lastId = 1;
-  private messages: Message[] = [
-    {
-      id: 1,
-      text: 'Something',
-      from: 'Andorinha',
-      to: 'Derrick',
-      read: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
 
   throwNotFoundException() {
     throw new NotFoundException('Message not found');
@@ -49,34 +37,25 @@ export class MessagesService {
     return this.messageRepository.save(message);
   }
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    const findedMessageIndex = this.messages.findIndex(
-      message => message.id === id,
-    );
+  async update(id: number, updateMessageDto: UpdateMessageDto) {
+    const message = await this.messageRepository.preload({
+      id,
+      ...updateMessageDto,
+    });
 
-    if (findedMessageIndex < 0) {
-      this.throwNotFoundException();
+    if (!message) {
+      return this.throwNotFoundException();
     }
 
-    const findedMessage = this.messages[findedMessageIndex];
-
-    this.messages[findedMessageIndex] = {
-      ...findedMessage,
-      ...updateMessageDto,
-    };
+    return this.messageRepository.save(message);
   }
 
-  delete(id: number) {
-    const findedMessageIndex = this.messages.findIndex(
-      message => message.id === id,
-    );
-
-    if (findedMessageIndex < 0) {
+  async delete(id: number) {
+    const message = await this.messageRepository.findOne({ where: { id } });
+    if (!message) {
       this.throwNotFoundException();
+      return;
     }
-    const message = this.messages[findedMessageIndex];
-
-    this.messages.splice(findedMessageIndex, 1);
-    return message;
+    return this.messageRepository.remove(message);
   }
 }
