@@ -13,7 +13,8 @@ export class MessagesService {
       from: 'Andorinha',
       to: 'Derrick',
       read: true,
-      date: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ];
 
@@ -26,7 +27,7 @@ export class MessagesService {
   }
 
   findOne(id: number) {
-    const findedMessage = this.messages.find((message) => message.id === id);
+    const findedMessage = this.messages.find(message => message.id === id);
 
     if (findedMessage) return findedMessage;
 
@@ -40,7 +41,7 @@ export class MessagesService {
       id,
       ...createMessageDto,
       read: false,
-      date: new Date(),
+      createdAt: new Date(),
     };
     this.messages.push(newMessage);
     return this.messages;
@@ -48,7 +49,7 @@ export class MessagesService {
 
   update(id: number, updateMessageDto: UpdateMessageDto) {
     const findedMessageIndex = this.messages.findIndex(
-      (message) => message.id === id,
+      message => message.id === id,
     );
 
     if (findedMessageIndex < 0) {
@@ -65,7 +66,7 @@ export class MessagesService {
 
   delete(id: number) {
     const findedMessageIndex = this.messages.findIndex(
-      (message) => message.id === id,
+      message => message.id === id,
     );
 
     if (findedMessageIndex < 0) {
