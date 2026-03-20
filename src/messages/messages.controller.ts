@@ -18,8 +18,8 @@ export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
   @Get()
-  findAll(): Message[] {
-    return this.messagesService.findAll();
+  async findAll(): Promise<Message[]> {
+    return await this.messagesService.findAll();
   }
 
   @Get(':id')
