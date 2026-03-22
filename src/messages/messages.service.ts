@@ -4,12 +4,14 @@ import { Message } from './entities/message.entity';
 import { UpdateMessageDto } from './dto/update-message-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    private readonly usersService: UsersService,
   ) {}
 
   throwNotFoundException() {
@@ -17,7 +19,13 @@ export class MessagesService {
   }
 
   async findAll() {
-    const message = await this.messageRepository.find();
+    const message = await this.messageRepository.find({
+      relations: ['from', 'to'],
+      order: {
+        id: 'desc',
+      },
+    });
+
     return message;
   }
 
@@ -29,12 +37,35 @@ export class MessagesService {
   }
 
   async create(createMessageDto: CreateMessageDto) {
+    const { fromId, toId } = createMessageDto;
+    const from = await this.usersService.findOne(fromId);
+    const to = await this.usersService.findOne(toId);
+
+    if (!from || !to) {
+      return this.throwNotFoundException();
+    }
+
     const newMessage = {
-      ...createMessageDto,
+      text: createMessageDto.text,
+      from,
+      to,
       read: false,
     };
+
     const message = this.messageRepository.create(newMessage);
-    return this.messageRepository.save(message);
+    await this.messageRepository.save(message);
+
+    return {
+      ...message,
+      from: {
+        name: message.from.name,
+        id: message.from.id,
+      },
+      to: {
+        name: message.to.name,
+        id: message.to.id,
+      },
+    };
   }
 
   async update(id: number, updateMessageDto: UpdateMessageDto) {
