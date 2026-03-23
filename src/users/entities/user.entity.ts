@@ -24,7 +24,7 @@ export class User {
   @CreateDateColumn()
   updatedAt?: Date;
   @OneToMany(() => Message, message => message.from)
-  receivedMessages: Message[];
-  @OneToMany(() => Message, message => message.to)
   sentMessages: Message[];
+  @OneToMany(() => Message, message => message.to)
+  receivedMessages: Message[];
 }

@@ -31,9 +31,9 @@ export class MessagesService {
 
   async findOne(id: number) {
     const message = await this.messageRepository.findOne({ where: { id } });
-    if (message) return message;
+    if (!message) return this.throwNotFoundException();
 
-    this.throwNotFoundException();
+    return message;
   }
 
   async create(createMessageDto: CreateMessageDto) {
@@ -69,19 +69,13 @@ export class MessagesService {
   }
 
   async update(id: number, updateMessageDto: UpdateMessageDto) {
-    const partialUpdateMessageDto = {
-      text: updateMessageDto?.text,
-      read: updateMessageDto?.read,
-    };
-
-    const message = await this.messageRepository.preload({
-      id,
-      ...partialUpdateMessageDto,
-    });
-
+    const message = await this.findOne(id);
     if (!message) {
       return this.throwNotFoundException();
     }
+
+    message.text = updateMessageDto?.text ?? message.text;
+    message.read = updateMessageDto?.read ?? message.read;
 
     return this.messageRepository.save(message);
   }
