@@ -16,9 +16,10 @@ import { UpdateMessageDto } from './dto/update-message-dto';
 import { Message } from './entities/message.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
+import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 
 @Controller('messages')
-@UseInterceptors(AddHeaderInterceptor)
+@UseInterceptors(AddHeaderInterceptor, ErrorHandlingInterceptor)
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
