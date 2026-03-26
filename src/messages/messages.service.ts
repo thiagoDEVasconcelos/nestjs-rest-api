@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message-dto';
 import { Message } from './entities/message.entity';
 import { UpdateMessageDto } from './dto/update-message-dto';
@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class MessagesService {
   constructor(
     @InjectRepository(Message)
