@@ -1,0 +1,12 @@
+import bcrypt from 'node_modules/bcryptjs';
+import { HashingService } from './auth.service';
+
+export class BcryptService extends HashingService {
+  async hash(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
+  }
+  compare(password: string, passwordHash: string): Promise<boolean> {
+    return bcrypt.compare(password, passwordHash);
+  }
+}

@@ -8,12 +8,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { HashingService } from 'src/auth/hashing/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly hashingService: HashingService,
   ) {}
 
   throwNotFoundException() {
@@ -22,10 +24,13 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      const passwordHash = await this.hashingService.hash(
+        createUserDto.password,
+      );
       const userData = {
         name: createUserDto.name,
         email: createUserDto.email,
-        password: createUserDto.password,
+        passwordHash,
       };
 
       const newUser = this.userRepository.create(userData);
