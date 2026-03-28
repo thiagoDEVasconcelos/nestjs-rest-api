@@ -13,7 +13,7 @@ import {
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message-dto';
 import { UpdateMessageDto } from './dto/update-message-dto';
-import { Message } from './entities/message.entity';
+import { Messages } from './entities/message.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
@@ -30,7 +30,7 @@ export class MessagesController {
     @Query() paginationDto: PaginationDto,
     @UrlParam() url: string,
     @ReqDataParam('method') method,
-  ): Promise<Message[]> {
+  ): Promise<Messages[]> {
     console.log(url);
     console.log(method);
 

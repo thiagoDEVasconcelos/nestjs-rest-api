@@ -9,26 +9,22 @@ GET {{baseUrl}}/messages/?page=10&limit=10
 GET {{baseUrl}}/messages/2
 
 ###
-POST {{baseUrl}}/messages/
+POST {{baseUrl}}/users/
 Content-Type: application/json
 
-  {
-    "id": "NOVA MENSAGEM",
-    "text": "Something",
-    "from": "Andorinha",
-    "to": "Derrick",
-    "read": true,
-    "date": "2026-03-17T01:37:17.778Z"
-  }
+ {
+    "name": "Lebron James da Silva",
+    "email": "lbjdasilva@email.com",
+    "password": "Aq3oh3lgkhwelhq3a@"
+}
+
 
 ###
-PATCH {{baseUrl}}/users/
+PATCH {{baseUrl}}/users/3
 Content-Type: application/json
 
 {
-    "name": "Lebron James da Silva",
-    "email": "lbjdasilva@email.com",
-    "password": "mypassword123",
+    "password": "mypassword123"
 }
 
 ###

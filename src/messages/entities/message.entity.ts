@@ -1,4 +1,4 @@
-import { User } from 'src/users/entities/user.entity';
+import { Users } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,17 +10,17 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Message {
+export class Messages {
   @PrimaryGeneratedColumn()
   id: number;
   @Column({ type: 'varchar', length: 255 })
   text: string;
-  @ManyToOne(() => User, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => Users, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'from' })
-  from: User;
-  @ManyToOne(() => User, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  from: Users;
+  @ManyToOne(() => Users, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'to' })
-  to: User;
+  to: Users;
   @Column({ default: false, type: 'boolean' })
   read: boolean;
   @CreateDateColumn()

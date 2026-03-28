@@ -1,5 +1,5 @@
 import { IsEmail } from 'class-validator';
-import { Message } from 'src/messages/entities/message.entity';
+import { Messages } from 'src/messages/entities/message.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class Users {
   @PrimaryGeneratedColumn()
   id: number;
   @Column({ type: 'varchar', length: 255 })
@@ -23,8 +23,8 @@ export class User {
   createdAt?: Date;
   @CreateDateColumn()
   updatedAt?: Date;
-  @OneToMany(() => Message, message => message.from)
-  sentMessages: Message[];
-  @OneToMany(() => Message, message => message.to)
-  receivedMessages: Message[];
+  @OneToMany(() => Messages, message => message.from)
+  sentMessages: Messages[];
+  @OneToMany(() => Messages, message => message.to)
+  receivedMessages: Messages[];
 }

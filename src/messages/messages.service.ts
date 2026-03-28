@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message-dto';
-import { Message } from './entities/message.entity';
+import { Messages } from './entities/message.entity';
 import { UpdateMessageDto } from './dto/update-message-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,8 +10,8 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 @Injectable({ scope: Scope.DEFAULT })
 export class MessagesService {
   constructor(
-    @InjectRepository(Message)
-    private readonly messageRepository: Repository<Message>,
+    @InjectRepository(Messages)
+    private readonly messageRepository: Repository<Messages>,
     private readonly usersService: UsersService,
   ) {}
 
