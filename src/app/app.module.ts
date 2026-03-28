@@ -4,8 +4,6 @@ import { AppService } from './app.service';
 import { MessagesModule } from 'src/messages/messages.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
-import { APP_FILTER } from '@nestjs/core';
-import { MyExceptionFilter } from 'src/common/filters/my-exception-filter';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from 'src/auth/auth.module';
 
@@ -29,12 +27,6 @@ import { AuthModule } from 'src/auth/auth.module';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_FILTER,
-      useClass: MyExceptionFilter,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

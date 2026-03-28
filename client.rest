@@ -20,11 +20,12 @@ Content-Type: application/json
 
 
 ###
-PATCH {{baseUrl}}/users/3
+POST {{baseUrl}}/auth/
 Content-Type: application/json
 
 {
-    "password": "mypassword123"
+    "email": "mypassword123@sim.com",
+    "password": "123"
 }
 
 ###
