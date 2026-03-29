@@ -8,6 +8,7 @@ import { Users } from 'src/users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import jwtConfig from './config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthGuard } from './guards/auth-token.guard';
 
 @Global()
 @Module({
@@ -23,7 +24,8 @@ import { JwtModule } from '@nestjs/jwt';
       useClass: BcryptService,
     },
     AuthService,
+    AuthGuard,
   ],
-  exports: [HashingService],
+  exports: [HashingService, JwtModule, ConfigModule, AuthGuard],
 })
 export class AuthModule {}

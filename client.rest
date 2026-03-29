@@ -6,7 +6,8 @@
 GET {{baseUrl}}/messages/?page=10&limit=10
 ###
 #@name MessagesControllerId
-GET {{baseUrl}}/messages/2
+GET {{baseUrl}}/users/
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoibGJqZGFzaWx2YUBlbWFpbC5jb20iLCJpYXQiOjE3NzQ4MTUwMzIsImV4cCI6MTc3NDgxODYzMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdC8zMDAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdC8zMDAwIn0.HQCMHINPtOqUJiIhLF4T92wxPsB7M8WV0m4UZ_PDYhc 
 
 ###
 POST {{baseUrl}}/users/
