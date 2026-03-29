@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HashingService } from './hashing/hashing.service';
 import jwtConfig from './config/jwt.config';
 import type { ConfigType } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -15,21 +16,22 @@ export class AuthService {
     private readonly hashingService: HashingService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-  ) {
-    console.log(this.jwtConfiguration);
-  }
+    private readonly jwtService: JwtService,
+  ) {}
 
   async login(loginDto: LoginDto) {
     let passwordIsValid = false;
+    console.log('chegou aqui');
 
     const user = await this.usersRepository.findOne({
       where: { email: loginDto.email },
     });
+    console.log('USER', user);
 
     if (user) {
       passwordIsValid = await this.hashingService.compare(
-        user.password,
         loginDto.password,
+        user.password,
       );
     }
 
@@ -37,6 +39,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Password!');
     }
 
-    return user;
+    const accessToken = await this.jwtService.signAsync(
+      {
+        sub: user?.id,
+        email: user?.email,
+      },
+      {
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+        secret: this.jwtConfiguration.secret,
+        expiresIn: this.jwtConfiguration.jwtTtl,
+      },
+    );
+    console.log(accessToken);
+
+    return accessToken;
   }
 }

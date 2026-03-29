@@ -24,8 +24,8 @@ POST {{baseUrl}}/auth/
 Content-Type: application/json
 
 {
-    "email": "mypassword123@sim.com",
-    "password": "123"
+    "email": "lbjdasilva@email.com",
+    "password": "Aq3oh3lgkhwelhq3a@"
 }
 
 ###
