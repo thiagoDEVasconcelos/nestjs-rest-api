@@ -21,12 +21,9 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     let passwordIsValid = false;
-    console.log('chegou aqui');
-
     const user = await this.usersRepository.findOne({
       where: { email: loginDto.email },
     });
-    console.log('USER', user);
 
     if (user) {
       passwordIsValid = await this.hashingService.compare(
@@ -52,6 +49,6 @@ export class AuthService {
       },
     );
 
-    return accessToken;
+    return { accessToken };
   }
 }

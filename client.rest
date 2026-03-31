@@ -1,33 +1,90 @@
 @baseUrl = http://localhost:3000
+@authToken = {{authenticate.response.body.accessToken}}
 
-### MessagesController 
+# MESSAGES
+### Lists all messages
+GET {{baseUrl}}/messages/
+?limit=10
+&offset=0
+Authorization: Bearer {{authToken}}
+### List one message
+GET {{baseUrl}}/messages/30/
+### Create a message
+POST {{baseUrl}}/messages/
+Content-Type: application/json
 
-#@name MessagesController
-GET {{baseUrl}}/messages/?page=10&limit=10
-###
-#@name MessagesControllerId
+{
+    "texto": "De Leo para Joana",
+    "deId": 14,
+    "paraId": 12
+}
+### Update a message
+PATCH {{baseUrl}}/messages/34/
+Content-Type: application/json
+
+{
+    "texto": "De Leo para Joana",
+    "lido": false
+}
+### Delete a message
+DELETE {{baseUrl}}/messages/34/
+
+
+
+# 
+
+
+
+# Pessoas
+### List all users
 GET {{baseUrl}}/users/
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoibGJqZGFzaWx2YUBlbWFpbC5jb20iLCJpYXQiOjE3NzQ4MTUwMzIsImV4cCI6MTc3NDgxODYzMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdC8zMDAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdC8zMDAwIn0.HQCMHINPtOqUJiIhLF4T92wxPsB7M8WV0m4UZ_PDYhc 
-
-###
+?limit=10
+&offset=0
+Authorization: Bearer {{authToken}}
+### List one user
+GET {{baseUrl}}/users/14/
+Authorization: Bearer {{authToken}}
+### Create a user
 POST {{baseUrl}}/users/
 Content-Type: application/json
 
- {
-    "name": "Lebron James da Silva",
-    "email": "lbjdasilva@email.com",
-    "password": "Aq3oh3lgkhwelhq3a@"
+{
+    "email": "luiz@email.com",
+    "password": "123456",
+    "nome": "Luiz"
 }
+### Update a user
+PATCH {{baseUrl}}/users/23/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "nome": "aaaaaa"
+}
+### Delete a user
+DELETE {{baseUrl}}/users/16/
+Authorization: Bearer {{authToken}}
 
 
-###
+
+# 
+
+
+
+# AUTH
+### Authentication
+# @name authenticate
 POST {{baseUrl}}/auth/
 Content-Type: application/json
 
 {
-    "email": "lbjdasilva@email.com",
-    "password": "Aq3oh3lgkhwelhq3a@"
+    "email": "luiz@email.com",
+    "password": "123456"
 }
 
-###
-DELETE {{baseUrl}}/messages/2
+#
+### AppControllerGetHello
+
+# @name AppControllerGetHello
+GET {{baseUrl}}/home/hello
+

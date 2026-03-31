@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { HashingService } from 'src/auth/hashing/hashing.service';
+import { TokenPayloadDto } from 'src/auth/dto/tokenPayloadDto';
 
 @Injectable()
 export class UsersService {
@@ -23,8 +25,6 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    console.log('OIOIOI');
-
     try {
       const passwordHash = await this.hashingService.hash(
         createUserDto.password,
@@ -58,7 +58,11 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
     const partialUpdateUserDto = {
       name: updateUserDto?.name,
       email: updateUserDto?.email,
@@ -79,13 +83,21 @@ export class UsersService {
 
     if (!user) return this.throwNotFoundException();
 
+    if (user.id !== tokenPayload.sub) {
+      throw new ForbiddenException('You are not this user.');
+    }
+
     return this.userRepository.save(user);
   }
 
-  async remove(id: number) {
+  async remove(id: number, tokenPayload: TokenPayloadDto) {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) return this.throwNotFoundException();
+
+    if (user.id !== tokenPayload.sub) {
+      throw new ForbiddenException('ou cannot delete another users.');
+    }
 
     return this.userRepository.delete(user);
   }
