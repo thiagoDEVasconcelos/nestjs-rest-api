@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, Scope } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  Scope,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message-dto';
 import { Messages } from './entities/message.entity';
 import { UpdateMessageDto } from './dto/update-message-dto';
@@ -6,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { TokenPayloadDto } from 'src/auth/dto/tokenPayloadDto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class MessagesService {
@@ -15,7 +22,7 @@ export class MessagesService {
     private readonly usersService: UsersService,
   ) {}
 
-  throwNotFoundException() {
+  throwNotFoundException(): never {
     throw new NotFoundException('Message not found');
   }
 
@@ -35,15 +42,35 @@ export class MessagesService {
   }
 
   async findOne(id: number) {
-    const message = await this.messageRepository.findOne({ where: { id } });
+    const message = await this.messageRepository.findOne({
+      where: { id },
+      relations: ['from', 'to'],
+      order: {
+        id: 'desc',
+      },
+      select: {
+        from: {
+          id: true,
+          name: true,
+        },
+        to: {
+          id: true,
+          name: true,
+        },
+      },
+    });
+
     if (!message) return this.throwNotFoundException();
 
     return message;
   }
 
-  async create(createMessageDto: CreateMessageDto) {
-    const { fromId, toId } = createMessageDto;
-    const from = await this.usersService.findOne(fromId);
+  async create(
+    createMessageDto: CreateMessageDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
+    const { toId } = createMessageDto;
+    const from = await this.usersService.findOne(tokenPayload.sub);
     const to = await this.usersService.findOne(toId);
 
     if (!from || !to) {
@@ -73,10 +100,15 @@ export class MessagesService {
     };
   }
 
-  async update(id: number, updateMessageDto: UpdateMessageDto) {
+  async update(
+    id: number,
+    updateMessageDto: UpdateMessageDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
     const message = await this.findOne(id);
-    if (!message) {
-      return this.throwNotFoundException();
+
+    if (message.from.id !== tokenPayload.sub) {
+      throw new ForbiddenException('This message is not yours.');
     }
 
     message.text = updateMessageDto?.text ?? message.text;
@@ -85,12 +117,15 @@ export class MessagesService {
     return this.messageRepository.save(message);
   }
 
-  async delete(id: number) {
-    const message = await this.messageRepository.findOne({ where: { id } });
-    if (!message) {
-      this.throwNotFoundException();
-      return;
+  async delete(id: number, tokenPayload: TokenPayloadDto) {
+    const message = await this.findOne(id);
+
+    if (message.from.id !== tokenPayload.sub) {
+      throw new UnauthorizedException(
+        "You cannot delete other users' messages",
+      );
     }
+
     return this.messageRepository.remove(message);
   }
 }

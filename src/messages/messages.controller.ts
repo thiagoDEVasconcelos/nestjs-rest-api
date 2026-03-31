@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
@@ -19,6 +20,9 @@ import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interce
 import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 import { UrlParam } from 'src/common/params/url-param.decorator';
 import { ReqDataParam } from 'src/common/params/req-data.decorator';
+import { AuthGuard } from 'src/auth/guards/auth-token.guard';
+import { TokenPayloadParam } from 'src/auth/params/token-payload-param';
+import { TokenPayloadDto } from 'src/auth/dto/tokenPayloadDto';
 
 @Controller('messages')
 @UseInterceptors(AddHeaderInterceptor, ErrorHandlingInterceptor)
@@ -42,21 +46,31 @@ export class MessagesController {
     return this.messagesService.findOne(id);
   }
 
+  @UseGuards(AuthGuard)
   @Post()
-  createMessage(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
+  createMessage(
+    @Body() createMessageDto: CreateMessageDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.messagesService.create(createMessageDto, tokenPayload);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMessageDto: UpdateMessageDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
-    return this.messagesService.update(id, updateMessageDto);
+    return this.messagesService.update(id, updateMessageDto, tokenPayload);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  deleteOne(@Param('id', ParseIntPipe) id: number) {
-    return this.messagesService.delete(id);
+  deleteOne(
+    @Param('id', ParseIntPipe) id: number,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.messagesService.delete(id, tokenPayload);
   }
 }

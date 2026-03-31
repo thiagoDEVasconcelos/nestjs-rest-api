@@ -11,6 +11,7 @@ Authorization: Bearer {{authToken}}
 GET {{baseUrl}}/messages/30/
 ### Create a message
 POST {{baseUrl}}/messages/
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -20,6 +21,7 @@ Content-Type: application/json
 }
 ### Update a message
 PATCH {{baseUrl}}/messages/34/
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -28,6 +30,7 @@ Content-Type: application/json
 }
 ### Delete a message
 DELETE {{baseUrl}}/messages/34/
+Authorization: Bearer {{authToken}}
 
 
 
