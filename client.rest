@@ -1,5 +1,6 @@
 @baseUrl = http://localhost:3000
 @authToken = {{authenticate.response.body.accessToken}}
+@refreshToken = {{authenticate.response.body.refreshToken}}
 
 # MESSAGES
 ### Lists all messages
@@ -91,3 +92,12 @@ Content-Type: application/json
 # @name AppControllerGetHello
 GET {{baseUrl}}/home/hello
 
+
+### Re-Authentication
+# @name reAuthenticate
+POST {{baseUrl}}/auth/refresh/
+Content-Type: application/json
+
+{
+    "refreshToken":"{{refreshToken}}"
+}
