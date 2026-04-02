@@ -37,16 +37,35 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Password!');
     }
 
+    if (!user) return;
+
+    const accessToken = await this.signJwtAsync(
+      user.id,
+      this.jwtConfiguration.jwtTtl,
+      {
+        email: user.email,
+      },
+    );
+
+    const refreshToken = await this.signJwtAsync(
+      user.id,
+      this.jwtConfiguration.jwtRefreshTtl,
+    );
+
+    return { accessToken, refreshToken };
+  }
+
+  private async signJwtAsync<T>(sub: number, expiresIn: number, payload?: T) {
     const accessToken = await this.jwtService.signAsync(
       {
-        sub: user?.id,
-        email: user?.email,
+        sub,
+        ...payload,
       },
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
-        expiresIn: this.jwtConfiguration.jwtTtl,
+        expiresIn,
       },
     );
 
