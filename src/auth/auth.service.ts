@@ -20,25 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginDto: LoginDto) {
-    let passwordIsValid = false;
-    const user = await this.usersRepository.findOne({
-      where: { email: loginDto.email },
-    });
-
-    if (user) {
-      passwordIsValid = await this.hashingService.compare(
-        loginDto.password,
-        user.password,
-      );
-    }
-
-    if (!passwordIsValid) {
-      throw new UnauthorizedException('Invalid Password!');
-    }
-
-    if (!user) return;
-
+  private async createTokens(user: Users) {
     const accessToken = await this.signJwtAsync(
       user.id,
       this.jwtConfiguration.jwtTtl,
@@ -72,7 +54,50 @@ export class AuthService {
     return { accessToken };
   }
 
-  refreshTokens(refreshToken: RefreshTokenDto) {
-    return true;
+  async login(loginDto: LoginDto) {
+    let passwordIsValid = false;
+    const user = await this.usersRepository.findOne({
+      where: { email: loginDto.email },
+    });
+
+    if (user) {
+      passwordIsValid = await this.hashingService.compare(
+        loginDto.password,
+        user.password,
+      );
+    }
+
+    if (!passwordIsValid) {
+      throw new UnauthorizedException('Invalid Password!');
+    }
+
+    if (!user) return;
+
+    return this.createTokens(user);
+  }
+
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync<JwtPayload>(
+        refreshTokenDto.refreshToken,
+        this.jwtConfiguration,
+      );
+
+      const user = await this.usersRepository.findOneBy({
+        id: sub,
+      });
+
+      if (!user) throw new Error('User not found');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new UnauthorizedException(error.message);
+      }
+
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
+
+type JwtPayload = {
+  sub: number;
+};

@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000
 @authToken = {{authenticate.response.body.accessToken}}
-@refreshToken = {{authenticate.response.body.refreshToken}}
+@refreshToken = {{reAuthenticate.response.body.refreshToken}}
 
 # MESSAGES
 ### Lists all messages
