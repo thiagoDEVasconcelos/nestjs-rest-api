@@ -15,7 +15,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/guards/auth-token.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload-param';
 import { TokenPayloadDto } from 'src/auth/dto/tokenPayloadDto';
+import { RoutePolicyGuard } from 'src/auth/guards/route-policy.guard';
 
+@UseGuards(RoutePolicyGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -30,7 +32,6 @@ export class UsersController {
   @Get()
   findAll(@Req() req: Request) {
     console.log(req);
-
     return this.usersService.findAll();
   }
 

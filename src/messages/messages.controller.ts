@@ -23,6 +23,8 @@ import { ReqDataParam } from 'src/common/params/req-data.decorator';
 import { AuthGuard } from 'src/auth/guards/auth-token.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload-param';
 import { TokenPayloadDto } from 'src/auth/dto/tokenPayloadDto';
+import { SetRoutePolicy } from 'src/auth/decorators/set-route-policy.decorator';
+import { RoutePolicies } from 'src/auth/enums/route-policies.enum';
 
 @Controller('messages')
 @UseInterceptors(AddHeaderInterceptor, ErrorHandlingInterceptor)
@@ -30,6 +32,7 @@ export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
   @Get()
+  @SetRoutePolicy(RoutePolicies.findAllMessages)
   async findAll(
     @Query() paginationDto: PaginationDto,
     @UrlParam() url: string,
