@@ -26,6 +26,6 @@ import { AuthGuard } from './guards/auth-token.guard';
     AuthService,
     AuthGuard,
   ],
-  exports: [HashingService, JwtModule, ConfigModule, AuthGuard],
+  exports: [HashingService, JwtModule, ConfigModule, AuthGuard, TypeOrmModule],
 })
 export class AuthModule {}

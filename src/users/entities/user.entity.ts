@@ -27,4 +27,6 @@ export class Users {
   sentMessages: Messages[];
   @OneToMany(() => Messages, message => message.to)
   receivedMessages: Messages[];
+  @Column({ default: true })
+  isActive: boolean;
 }

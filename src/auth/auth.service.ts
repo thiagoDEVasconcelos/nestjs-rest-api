@@ -57,7 +57,7 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     let passwordIsValid = false;
     const user = await this.usersRepository.findOne({
-      where: { email: loginDto.email },
+      where: { email: loginDto.email, isActive: true },
     });
 
     if (user) {
@@ -68,7 +68,7 @@ export class AuthService {
     }
 
     if (!passwordIsValid) {
-      throw new UnauthorizedException('Invalid Password!');
+      throw new UnauthorizedException('Unauthorized user!');
     }
 
     if (!user) return;
