@@ -101,4 +101,8 @@ export class UsersService {
 
     return this.userRepository.delete(user);
   }
+
+  uploadPhoto() {
+    return true;
+  }
 }

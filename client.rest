@@ -101,3 +101,16 @@ Content-Type: application/json
 {
     "refreshToken":"{{refreshToken}}"
 }
+
+### Update
+## User photo
+POST {{baseUrl}}/users/upload-picture
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=----BoundaryDelimiterHttp
+
+------BoundaryDelimitadorHttp
+Content-Disposition: form-data; name="file"; filename="me-as-an-amazon-developer.png"
+Content-Type: image/png
+
+< ./dev/images/me-as-an-amazon-developer.png
+------BoundaryDelimitadorHttp--
