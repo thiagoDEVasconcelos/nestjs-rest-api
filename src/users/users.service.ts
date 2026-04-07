@@ -109,18 +109,21 @@ export class UsersService {
     if (file.size < 1024) {
       throw new BadRequestException('File too small');
     }
+    const user = await this.userRepository.findOne({
+      where: { id: tokenPayload.sub },
+    });
     const extension = path.extname(file.originalname);
     const fileName = `${tokenPayload.sub}${extension}`;
     const fullPathFile = path.resolve(process.cwd(), 'photos', fileName);
     await fs.writeFile(fullPathFile, file.buffer);
 
-    return {
-      fieldname: file.fieldname,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      buffer: {},
-      size: file.size,
-    };
-    return true;
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    user.picture = fileName;
+    await this.userRepository.save(user);
+
+    return user;
   }
 }

@@ -29,4 +29,6 @@ export class Users {
   receivedMessages: Messages[];
   @Column({ default: true })
   isActive: boolean;
+  @Column({ default: '' })
+  picture: string;
 }
