@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from 'src/auth/auth.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import path from 'path';
 
 @Module({
   imports: [
@@ -21,6 +23,10 @@ import { AuthModule } from 'src/auth/auth.module';
       password: process.env.DATABASE_PASSWORD,
       autoLoadEntities: Boolean(process.env.DATABASE_AUTOLOADENTITIES),
       synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', '..', 'pictures'),
+      serveRoot: '/pictures',
     }),
     AuthModule,
     MessagesModule,
