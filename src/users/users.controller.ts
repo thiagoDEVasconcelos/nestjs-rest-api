@@ -19,6 +19,8 @@ import { TokenPayloadParam } from 'src/auth/params/token-payload-param';
 import { TokenPayloadDto } from 'src/auth/dto/tokenPayloadDto';
 import { RoutePolicyGuard } from 'src/auth/guards/route-policy.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import * as path from 'path';
+import { promises as fs } from 'fs';
 
 @UseGuards(RoutePolicyGuard)
 @Controller('users')
@@ -66,10 +68,15 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload-picture')
-  uploadPhoto(
+  async uploadPhoto(
     @UploadedFile() file: Express.Multer.File,
     @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
+    const extension = path.extname(file.originalname);
+    const fileName = `${tokenPayload.sub}${extension}`;
+    const fullPathFile = path.resolve(process.cwd(), 'photos', fileName);
+    await fs.writeFile(fullPathFile, file.buffer);
+
     return {
       fieldname: file.fieldname,
       originalname: file.originalname,
