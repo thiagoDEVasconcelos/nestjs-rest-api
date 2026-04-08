@@ -121,7 +121,7 @@ export class UsersService {
       throw new NotFoundException();
     }
 
-    user.picture = fileName;
+    user.photo = fileName;
     await this.userRepository.save(user);
 
     return user;

@@ -30,5 +30,5 @@ export class Users {
   @Column({ default: true })
   isActive: boolean;
   @Column({ default: '' })
-  picture: string;
+  photo: string;
 }
