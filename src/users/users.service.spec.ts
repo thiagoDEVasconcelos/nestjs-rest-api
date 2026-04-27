@@ -1,17 +1,66 @@
-import { describe } from 'node:test';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { Repository } from 'typeorm';
+import { HashingService } from 'src/auth/hashing/hashing.service';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Users } from './entities/user.entity';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
-describe('UserService', () => {
-  // it('Should test if user can create profile', () => {});
-  it('deve somar o numero1 e o numero2 e resultar em 3', () => {
-    // Configurar - Arrange
-    const numero1 = 1;
-    const numero2 = 2;
+describe('UsersService', () => {
+  let usersService: UsersService;
+  let usersRepository: Repository<Users>;
+  let hashingService: HashingService;
 
-    // Fazer alguma ação - Act
-    const result = numero1 + numero2;
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        {
+          provide: getRepositoryToken(Users),
+          useValue: {
+            save: jest.fn(),
+            create: jest.fn(),
+          },
+        },
+        {
+          provide: HashingService,
+          useValue: {
+            hash: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
 
-    // Conferir se essa ação foi a esperada - Assert
-    // === 3 = toBe
-    expect(result).toBe(3);
+    usersService = module.get<UsersService>(UsersService);
+    usersRepository = module.get<Repository<Users>>(getRepositoryToken(Users));
+    hashingService = module.get<HashingService>(HashingService);
+  });
+
+  it('UsersService should be defined', () => {
+    expect(usersService).toBeDefined();
+  });
+
+  describe('create', () => {
+    it('should create a new user', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'tsousa@email.com',
+        name: 'Thiago',
+        password: '123456',
+      };
+      const passwordHash = 'HASHDESENHA';
+
+      // Assert
+      expect(hashingService.hash).toHaveBeenCalledWith(createUserDto.password);
+
+      expect(usersRepository.create).toHaveBeenCalledWith({
+        name: createUserDto.name,
+        email: createUserDto.email,
+        passwordHash,
+      });
+
+      jest.spyOn(hashingService, 'hash').mockResolvedValue(passwordHash);
+      expect(usersService).toBeDefined();
+    });
   });
 });
