@@ -120,4 +120,16 @@ describe('UsersService', () => {
       await expect(usersService.findOne(1)).rejects.toThrow(NotFoundException);
     });
   });
+
+  describe('findAll', () => {
+    it('should return all users', async () => {
+      const mockUsers: Users[] = [];
+
+      jest.spyOn(usersRepository, 'find').mockResolvedValue(mockUsers);
+
+      const result = await usersService.findAll();
+
+      expect(result).toEqual(mockUsers);
+    });
+  });
 });
