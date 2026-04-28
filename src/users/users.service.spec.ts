@@ -81,9 +81,19 @@ describe('UsersService', () => {
         code: '23505',
       });
 
-      const result = await expect(
-        usersService.create({} as any),
-      ).rejects.toThrow(ConflictException);
+      await expect(usersService.create({} as any)).rejects.toThrow(
+        ConflictException,
+      );
+    });
+
+    it('should throw a conflictException when email already exists', async () => {
+      jest
+        .spyOn(usersRepository, 'save')
+        .mockRejectedValue(new Error('Generic error'));
+
+      await expect(usersService.create({} as any)).rejects.toThrow(
+        new Error('Generic error'),
+      );
     });
   });
 });
