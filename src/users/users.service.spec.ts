@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -22,6 +22,7 @@ describe('UsersService', () => {
           useValue: {
             save: jest.fn(),
             create: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -94,6 +95,29 @@ describe('UsersService', () => {
       await expect(usersService.create({} as any)).rejects.toThrow(
         new Error('Generic error'),
       );
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return an user if its found', async () => {
+      const userId = 1;
+      const foundUser = {
+        id: userId,
+        name: 'thiagovs',
+        email: 'thiago@gmail.com',
+        passwordHash: '123566',
+      };
+
+      jest
+        .spyOn(usersRepository, 'findOneBy')
+        .mockResolvedValue(foundUser as any);
+      const result = await usersService.findOne(userId);
+
+      expect(result).toEqual(foundUser);
+    });
+
+    it('should throw an error if the person is not found', async () => {
+      await expect(usersService.findOne(1)).rejects.toThrow(NotFoundException);
     });
   });
 });
